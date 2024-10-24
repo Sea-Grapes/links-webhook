@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Webhook Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src='glow.js'></script>
+</head>
+<body>
+
+<style>
+#script {
+  background-color: #20293A;
+  color: #a2aab1;
+
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  border-radius: 0.5em;
+  overflow-x: auto;
+
+  * {
+    font-weight: 400;
+    font-style: inherit;
+    text-decoration: inherit
+  }
+
+  b { color: #7dd3fc }
+  em { color: #f472b6 }
+  strong { color: #419fff }
+  i { color: #64748b }
+
+
+  u {
+    text-decoration: underline wavy red;
+    text-decoration-thickness: .15em;
+    text-underline-offset: .5em;
+  }
+
+  sup {
+    color: #6f7a7d;
+    font-size: inherit;
+    vertical-align: inherit;
+    font-style: italic;
+  }
+
+  label {
+    font-weight: bold;
+    color: #fff;
+  }
+
+  mark {
+    background-color: #2dd4bf26;
+    color: unset;
+    border-radius: .2em;
+    padding: .3em .4em;
+    margin: -.3em -.4em;
+  }
+
+  span {
+    counter-increment: line-counter 1;
+
+    &:before {
+      color: #475569;
+      content: counter(line-counter);
+      display: inline-block;
+      text-align: right;
+      padding-right: 1em;
+      margin-right: 1em;
+      width: 2.5em;
+    }
+  }
+
+  span:has(u):before {
+    background-color: red;
+    border-radius: .2em;
+    font-weight: bold;
+    color: white;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f9fafb;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 0.25em;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #c4c8cf;
+  }
+}
+
+
+::selection {
+  background: rgba(46, 102, 255, 0.1)
+}
+</style>
+
+<section class='py-16 px-4 mx-auto max-w-screen-md'>
+  <div class='p-8 border border-gray-300 rounded-lg shadow shadow-gray-500/10 space-y-8'>
+    <div>
+      <h1 class='text-2xl font-bold text-slate-800 mb-1'>Webhook Bookmarklet Generator</h1>
+      <p class='text-slate-500'>
+        A simple tool to generate a bookmarklet script for easily
+        fetching discord webhooks! The script will log the url of
+        your current page to discord. (Guys, I may have been infected by SaaS...)
+      </p>
+    </div>
+    <div>
+      <h2 class='text-gray-800 font-medium mb-1'>Webhook url</h2>
+      <input id='input_url' class='outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2 w-full' type='text' placeholder='https://discord.com/api/webhooks/XXXXXXXXXXXXXXXXXXX/...'>
+    </div>
+    <div>
+      <h2 class='text-gray-800 font-medium mb-1'>Bookmarklet name</h2>
+      <input id='input_name' class='outline-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2 w-full' type='text' placeholder='Enter a name...'>
+    </div>
+    <div>
+      <h2 class='text-gray-800 font-medium mb-1'>Installation</h2>
+      <p class='text-slate-500'>to install the bookmarklet, drag this link to your bookmarks bar:
+        <a class='text-blue-500 underline cursor-pointer' id='output'>Bookmarklet</a>
+      </p>
+    </div>
+    <div>
+      <h2 class='text-gray-800 font-medium mb-1'>The script</h2>
+      <pre id='script' class='py-4 px-6 text-sm'></pre>
+    </div>
+    <h2 class='text-slate-500'>Made by SeaGrapes</h2>
+  </div>
+</section>
+
+<script id='script_src' type='text/custom'>
+javascript:(()=>{
+  if (!window.discord_webhook_sent) {
+    window.discord_webhook_sent = true;
+    fetch('<WEBHOOK URL>', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: location.href })
+    }).catch(err => {
+      alert('Failed to send');
+      console.log(err)
+    })
+  }
+})()
+</script>
+
+<script>
+
+  const input_url = document.querySelector('#input_url')
+  const input_name = document.querySelector('#input_name')
+
+  const script_src = document.querySelector('#script_src').textContent.trim()
+
+  const script = document.querySelector('#script')
+  script.innerHTML = glow(script_src, { language: 'js '})
+  const script_url = script.querySelector('em')
+
+  const output = document.querySelector('#output')
+
+  input_url.addEventListener('input', e => {
+    let url = input_url.value;
+    script_url.textContent = `'${url || '<WEBHOOK URL>'}'`
+    output.href = url ? script_src.replace('<WEBHOOK URL>', url).replace(/\s\s+/g, ' ') : '';
+  })
+
+  input_name.addEventListener('input', e => {
+    output.textContent = input_name.value || 'Bookmarklet'
+  })
+
+</script>
+
+</body>
+</html>
