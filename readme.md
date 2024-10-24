@@ -13,4 +13,4 @@ A simple tool to easily generate a bookmarklet for fetching discord webhooks. Us
 
 ## Dependencies
 - Currently using tailwindcss play cdn (I'm too lazy to build the css lmao, also I aint using a whole framework for this tiny project)
-- Using [https://www.npmjs.com/package/nue-glow](nue-glow) from NueJS for code highlighting. Go check them out, nue-glow is way faster and better than shiki/prism.
+- Using [nue-glow](https://www.npmjs.com/package/nue-glow) from NueJS for code highlighting. Go check them out, nue-glow is way faster and better than shiki/prism.
